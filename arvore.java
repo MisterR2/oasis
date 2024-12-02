@@ -44,4 +44,34 @@ public class Arvore{
         return getAltura(no.getEsq()) - getAltura(no.getDir);
     }
 
+    public No balancoDireita(No no){
+        No novaRaiz  = no.getEsq();
+        No outroNo = novaRaiz.getDir();
+
+        novaRaiz.setDir(no);
+        no.setEsc(outroNo);
+
+        return novaRaiz;
+    }
+
+    public No balancoEsquerda(No no){
+        No novaRaiz  = no.getDir();
+        No outroNo = novaRaiz.getEsq();
+
+        novaRaiz.setEsc(no);
+        no.setDir(outroNo);
+
+        return novaRaiz;
+    }
+
+    public No inserirNo(No raiz, No novoNo){
+        if(raiz == null){
+            raiz = novoNo;
+            return raiz;
+        }
+        
+    }
+
+
+
 }
