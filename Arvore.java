@@ -25,8 +25,8 @@ public class Arvore{
         if(raiz == null){
             return -1;
         }else{
-            int alturaEsq = getAltura(raiz.getEsq());
-            int alturaDir = getAltura(raiz.getDir());
+            int alturaEsq = getAltura(raiz.getEsquerda());
+            int alturaDir = getAltura(raiz.getDireita());
 
             if(alturaEsq > alturaDir){
                 return alturaEsq + 1;
@@ -41,25 +41,25 @@ public class Arvore{
             return -1;
         }
 
-        return getAltura(no.getEsq()) - getAltura(no.getDir);
+        return getAltura(no.getEsquerda()) - getAltura(no.getDireita);
     }
 
     public No balancoDireita(No no){
-        No novaRaiz  = no.getEsq();
-        No outroNo = novaRaiz.getDir();
+        No novaRaiz  = no.getEsquerda();
+        No outroNo = novaRaiz.getDireita();
 
-        novaRaiz.setDir(no);
-        no.setEsc(outroNo);
+        novaRaiz.setDireita(no);
+        no.setEsquerda(outroNo);
 
         return novaRaiz;
     }
 
     public No balancoEsquerda(No no){
-        No novaRaiz  = no.getDir();
-        No outroNo = novaRaiz.getEsq();
+        No novaRaiz  = no.getDireita();
+        No outroNo = novaRaiz.getEsquerda();
 
-        novaRaiz.setEsc(no);
-        no.setDir(outroNo);
+        novaRaiz.setEsquerda(no);
+        no.setDireita(outroNo);
 
         return novaRaiz;
     }
@@ -74,9 +74,9 @@ public class Arvore{
         int idNovo = novoNo.getLivro().getId();
 
         if(idNovo < idRaiz){
-            raiz.setEsc(inserirNo(raiz.getEsq(), novoNo));
+            raiz.setEsquerda(inserirNo(raiz.getEsquerda(), novoNo));
         } else if(idNovo > idRaiz){
-            raiz.setDir(inserirNo(raiz.getDir(), novoNo));
+            raiz.setDireita(inserirNo(raiz.getDireita(), novoNo));
         }else{
             return raiz;
         }
@@ -85,11 +85,11 @@ public class Arvore{
         int idDirRaiz;
         int idEscRaiz;
 
-        if(raiz.getDir() != null){
-            idDirRaiz = raiz.getDir().getLivro().getId();
+        if(raiz.getDireita() != null){
+            idDirRaiz = raiz.getDireita().getLivro().getId();
         }
         if(raiz.getEsq() != null){
-            idDirRaiz = raiz.getEsq().getLivro().getId();
+            idDirRaiz = raiz.getEsquerda().getLivro().getId();
         }
 
         //Esquerda
@@ -104,12 +104,12 @@ public class Arvore{
 
         //esquerda-direita
         if(balanco > 1 && idNovo > idEscRaiz){
-            raiz.etEsc(balancoEsquerda(raiz->getEsc()));
+            raiz.setEsquerda(balancoEsquerda(raiz->getEsquerda()));
             return balancoDireita(raiz);
         }
         //direita-esquerda
         if(balanco < -1 && idNovo < idDirRaiz){
-            raiz.setDir(balancoDireita(raiz->getDir()));
+            raiz.setDireita(balancoDireita(raiz->getDireita()));
             return balancoEsquerda(raiz);
         }
 
@@ -126,16 +126,16 @@ public class Arvore{
         if(idRaiz == id){
             return raiz;
         }else if(id < idRaiz){
-            return buscaNo(raiz.getEsc(), id);
+            return buscaNo(raiz.getEsquerda(), id);
         }else{
-            return buscaNo(raiz.getDir(), id);
+            return buscaNo(raiz.getDireita(), id);
         }
     }
 
     public No valorminimo(No no){
         No noAtual = no;
-        while(noAtual.getEsc() != null){
-            noAtual = noAtual.getEsc();
+        while(noAtual.getEsquerda() != null){
+            noAtual = noAtual.getEsquerda();
         }
 
         return noAtual;
@@ -146,18 +146,18 @@ public class Arvore{
         if(raiz == null){
             return null;
         }else if(id < idRaiz){
-            raiz.setEsc(deletarNo(raiz.getEsc(), id));
+            raiz.setEsquerda(deletarNo(raiz.getEsquerda(), id));
         }else if(id > idRaiz){
-            raiz.setDir(deletarNo(raiz.getDir(), id));
+            raiz.setDireita(deletarNo(raiz.getDireita(), id));
         }else{
-            if(raiz.getEsc() == null){
-                return raiz.getDir(); 
-            } else if(raiz.getDir() == null){
-                return raiz.getEsc();
+            if(raiz.getEsquerda() == null){
+                return raiz.getDireita(); 
+            }else if(raiz.getDireita() == null){
+                return raiz.getEsquerda();
             }else{
-                No temp = valorminimo(raiz.getDir());
+                No temp = valorminimo(raiz.getDireita());
                 raiz.setLivro(temp.getLivro());
-                raiz.setDir(deletarNo(raiz.getDir(), temp.getLivro().getId()));
+                raiz.setDireita(deletarNo(raiz.getDireita(), temp.getLivro().getId()));
             }
 
         }
@@ -165,21 +165,21 @@ public class Arvore{
         int balanco = getBalanco(raiz);
 
         //Esquerda
-        if(balanco == 2 && getBalanco(raiz.getEsc()) >= 0)
+        if(balanco == 2 && getBalanco(raiz.getEsquerda()) >= 0)
             return balancoDireita(raiz);
         
         //Dupla Direita
-        else if (balanco == 2 && getBalanco(raiz.getEsc()) == -1){
-            raiz.setEsc(balancoEsquerda(raiz.getEsc()));
+        else if (balanco == 2 && getBalanco(raiz.getEsquerda()) == -1){
+            raiz.setEsquerda(balancoEsquerda(raiz.getEsquerda()));
             return balancoDireita(raiz);
         }
         //direita
-        else if(balanco == -2 && getBalanco(raiz.getDir()) <= 0){
+        else if(balanco == -2 && getBalanco(raiz.getDireita()) <= 0){
             return balancoEsquerda(raiz);
         }
         //dupla esquerda
-        else if(balanco == -2 && getBalanco(raiz.getDir()) == 1){
-            raiz.setDir(balancoDireita(raiz.getDir()));
+        else if(balanco == -2 && getBalanco(raiz.getDireita()) == 1){
+            raiz.setDireita(balancoDireita(raiz.getDireita()));
             return balancoEsquerda(raiz);
         }
 
