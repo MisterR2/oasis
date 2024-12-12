@@ -36,7 +36,7 @@ public class Arvore{
         }
     }
 
-    int getBalanco(No no){
+    public int getBalanco(No no){
         if(no == null){
             return -1;
         }
@@ -64,51 +64,56 @@ public class Arvore{
         return novaRaiz;
     }
 
+    public int comparar(String antiga, String nova){
+        int compare = antiga.compareToIgnoreCase(nova);
+        return comparar;
+    }
+
     public No inserirNo(No raiz, No novoNo){
         if(raiz == null){
             raiz = novoNo;
             return raiz;
         }
 
-        int idRaiz = raiz.getLivro().getId();
-        int idNovo = novoNo.getLivro().getId();
+        String TituloRaiz = raiz.getLivro().getTitulo();
+        String TituloNovo = novoNo.getLivro().getTitulo();
 
-        if(idNovo < idRaiz){
+        if(comparar(TituloRaiz, TituloNovo) > 0){
             raiz.setEsquerda(inserirNo(raiz.getEsquerda(), novoNo));
-        } else if(idNovo > idRaiz){
+        } else if(comparar(TituloRaiz, TituloNovo) < 0){
             raiz.setDireita(inserirNo(raiz.getDireita(), novoNo));
         }else{
             return raiz;
         }
         
         int balanco = getBalanco(raiz);
-        int idDirRaiz;
-        int idEscRaiz;
+        String TituloDirRaiz;
+        String TituloEscRaiz;
 
         if(raiz.getDireita() != null){
-            idDirRaiz = raiz.getDireita().getLivro().getId();
+            TituloDirRaiz = raiz.getDireita().getLivro().getTitulo();
         }
         if(raiz.getEsq() != null){
-            idDirRaiz = raiz.getEsquerda().getLivro().getId();
+            TituloEscRaiz = raiz.getEsquerda().getLivro().getTitulo();
         }
 
         //Esquerda
-        if(balanco > 1 && idNovo < idEscRaiz){
+        if(balanco > 1 &&  comparar(TituloEscRaiz, TituloNovo) > 0){
             return balancoDireita(raiz);
         }
 
         //Direita
-        if(balanco < -1 && idNovo > idDirRaiz){
+        if(balanco < -1 && comparar(TituloDirRaiz,TituloNovo) < 0){
             return balancoEsquerda(raiz);
         }
 
         //esquerda-direita
-        if(balanco > 1 && idNovo > idEscRaiz){
+        if(balanco > 1 && comparar(TituloEscRaiz, TituloNovo) < 0){
             raiz.setEsquerda(balancoEsquerda(raiz->getEsquerda()));
             return balancoDireita(raiz);
         }
         //direita-esquerda
-        if(balanco < -1 && idNovo < idDirRaiz){
+        if(balanco < -1 && comparar(TituloDirRaiz,TituloNovo) > 0){
             raiz.setDireita(balancoDireita(raiz->getDireita()));
             return balancoEsquerda(raiz);
         }
@@ -117,15 +122,16 @@ public class Arvore{
     
     }
 
-    public No buscaNo(No raiz, int id){
+    public No buscaNo(No raiz, String titulo){
           if(raiz == null){
             return raiz;
         }
 
-        int idRaiz = raiz.getLivro().getId();
-        if(idRaiz == id){
+        String tituloRaiz = raiz.getLivro().getTitulo();
+        comparar(tituloRaiz, titulo)
+        if(TituloRaiz.equalsIgnoreCase(titulo)){
             return raiz;
-        }else if(id < idRaiz){
+        }else if(comparar(tituloRaiz, titulo) > 0){
             return buscaNo(raiz.getEsquerda(), id);
         }else{
             return buscaNo(raiz.getDireita(), id);
@@ -141,14 +147,14 @@ public class Arvore{
         return noAtual;
     }
 
-    public No deletarNo(No raiz, int id){
-        int idRaiz = raiz.getLivro().getId();
+    public No deletarNo(No raiz, String titulo){
+        String tituloRaiz = raiz.getLivro().getTitulo();
         if(raiz == null){
             return null;
-        }else if(id < idRaiz){
-            raiz.setEsquerda(deletarNo(raiz.getEsquerda(), id));
-        }else if(id > idRaiz){
-            raiz.setDireita(deletarNo(raiz.getDireita(), id));
+        }else if(comparar(tituloRaiz, titulo) > 0){
+            raiz.setEsquerda(deletarNo(raiz.getEsquerda(), titulo));
+        }else if(comparar(tituloRaiz, titulo) < 0){
+            raiz.setDireita(deletarNo(raiz.getDireita(), titulo));
         }else{
             if(raiz.getEsquerda() == null){
                 return raiz.getDireita(); 
@@ -157,7 +163,7 @@ public class Arvore{
             }else{
                 No temp = valorminimo(raiz.getDireita());
                 raiz.setLivro(temp.getLivro());
-                raiz.setDireita(deletarNo(raiz.getDireita(), temp.getLivro().getId()));
+                raiz.setDireita(deletarNo(raiz.getDireita(), temp.getLivro().getTitulo()));
             }
 
         }
