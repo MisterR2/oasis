@@ -1,8 +1,22 @@
+import javax.swing.*;
+
 public class Arvore{
     private No raiz;
+    private TreePanel treePanel;
 
     public Arvore(){
-        raiz == null;
+        raiz = null;
+        treePanel = new TreePanel(raiz);
+    }
+
+    public void listarLivros(No no) {
+        if (no != null) {
+            listarLivros(no.getEsquerda());
+            System.out.println("\n");
+            System.out.println(no.getLivro());
+            System.out.println("\n");
+            listarLivros(no.getDireita());
+        }
     }
 
     public No getRaiz(){
@@ -11,6 +25,7 @@ public class Arvore{
 
     public void setRaiz(No novoNo){
         this.raiz = novoNo;
+        treePanel.setRaiz(raiz);
     }
 
     public boolean arvoreVazia(){
@@ -36,12 +51,25 @@ public class Arvore{
         }
     }
 
+    public void renderizarArvore() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JFrame frame = new JFrame("Árvore Binária");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setSize(800, 600);
+                frame.add(treePanel);
+                frame.setVisible(true);
+            }
+        });
+    }
+
     public int getBalanco(No no){
         if(no == null){
             return -1;
         }
 
-        return getAltura(no.getEsquerda()) - getAltura(no.getDireita);
+        return getAltura(no.getEsquerda()) - getAltura(no.getDireita());
     }
 
     public No balancoDireita(No no){
@@ -66,7 +94,7 @@ public class Arvore{
 
     public int comparar(String antiga, String nova){
         int compare = antiga.compareToIgnoreCase(nova);
-        return comparar;
+        return compare;
     }
 
     public No inserirNo(No raiz, No novoNo){
@@ -87,34 +115,34 @@ public class Arvore{
         }
         
         int balanco = getBalanco(raiz);
-        String TituloDirRaiz;
-        String TituloEscRaiz;
+        String TituloDirRaiz = null;
+        String TituloEscRaiz = null;
 
         if(raiz.getDireita() != null){
             TituloDirRaiz = raiz.getDireita().getLivro().getTitulo();
         }
-        if(raiz.getEsq() != null){
+        if(raiz.getEsquerda() != null){
             TituloEscRaiz = raiz.getEsquerda().getLivro().getTitulo();
         }
 
         //Esquerda
-        if(balanco > 1 &&  comparar(TituloEscRaiz, TituloNovo) > 0){
+        if(balanco > 1 && TituloEscRaiz != null && comparar(TituloEscRaiz, TituloNovo) > 0){
             return balancoDireita(raiz);
         }
 
         //Direita
-        if(balanco < -1 && comparar(TituloDirRaiz,TituloNovo) < 0){
+        if(balanco < -1 && TituloDirRaiz != null && comparar(TituloDirRaiz,TituloNovo) < 0){
             return balancoEsquerda(raiz);
         }
 
         //esquerda-direita
         if(balanco > 1 && comparar(TituloEscRaiz, TituloNovo) < 0){
-            raiz.setEsquerda(balancoEsquerda(raiz->getEsquerda()));
+            raiz.setEsquerda(balancoEsquerda(raiz.getEsquerda()));
             return balancoDireita(raiz);
         }
         //direita-esquerda
         if(balanco < -1 && comparar(TituloDirRaiz,TituloNovo) > 0){
-            raiz.setDireita(balancoDireita(raiz->getDireita()));
+            raiz.setDireita(balancoDireita(raiz.getDireita()));
             return balancoEsquerda(raiz);
         }
 
@@ -123,18 +151,18 @@ public class Arvore{
     }
 
     public No buscaNo(No raiz, String titulo){
-          if(raiz == null){
+        if(raiz == null){
             return raiz;
         }
 
         String tituloRaiz = raiz.getLivro().getTitulo();
-        comparar(tituloRaiz, titulo)
-        if(TituloRaiz.equalsIgnoreCase(titulo)){
+        comparar(tituloRaiz, titulo);
+        if(tituloRaiz.equalsIgnoreCase(titulo)){
             return raiz;
         }else if(comparar(tituloRaiz, titulo) > 0){
-            return buscaNo(raiz.getEsquerda(), id);
+            return buscaNo(raiz.getEsquerda(), titulo);
         }else{
-            return buscaNo(raiz.getDireita(), id);
+            return buscaNo(raiz.getDireita(), titulo);
         }
     }
 
@@ -148,10 +176,11 @@ public class Arvore{
     }
 
     public No deletarNo(No raiz, String titulo){
-        String tituloRaiz = raiz.getLivro().getTitulo();
         if(raiz == null){
             return null;
-        }else if(comparar(tituloRaiz, titulo) > 0){
+        }
+        String tituloRaiz = raiz.getLivro().getTitulo();
+        if(comparar(tituloRaiz, titulo) > 0){
             raiz.setEsquerda(deletarNo(raiz.getEsquerda(), titulo));
         }else if(comparar(tituloRaiz, titulo) < 0){
             raiz.setDireita(deletarNo(raiz.getDireita(), titulo));

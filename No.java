@@ -8,6 +8,12 @@ public class No{
         this.direita = null;
     }
 
+    public No(){
+        this.livro = null;
+        this.esquerda = null;
+        this.direita = null;
+    }
+
     public Livro getLivro(){
         return this.livro;
     }
