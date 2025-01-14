@@ -7,7 +7,7 @@ public class Livro{
     private String genero;
     private int qntdPag;
     private int pagLidas;
-    
+
     public int getPagLidas() {
         return pagLidas;
     }
@@ -130,8 +130,8 @@ public class Livro{
         this.qntdPag = qntdPag;
     }
 
-    public float getProgress(){
-        return (float)pagLidas/qntdPag*100;
+    public int getProgress(){
+        return (int)pagLidas/qntdPag*100;
     }
 
     @Override

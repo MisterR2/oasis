@@ -1,8 +1,33 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import javax.swing.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 public class Arvore{
     private No raiz;
     private TreePanel treePanel;
+
+	private Livro parseLivro(String line) {
+		try {
+			String[] parts = line.split(", ");
+			int id = Integer.parseInt(parts[0].split(": ")[1]);
+			String titulo = parts[1].split(": ")[1];
+			String autor = parts[2].split(": ")[1];
+			String genero = parts[3].split(": ")[1];
+			int qntdPag = Integer.parseInt(parts[4].split(": ")[1]);
+			int progresso = Integer.parseInt(parts[5].split(": ")[1].replace("Progresso: ", "").replace("%", ""));
+			int pagLidas = (int) (qntdPag * progresso / 100);
+	
+			Livro livro = new Livro(titulo, autor, genero, qntdPag, pagLidas);
+			livro.setId(id);
+			return livro;
+		} catch (Exception e) {
+			System.out.println("Erro ao parsear linha: " + line + ". Exceção: " + e.getMessage());
+			return null;
+		}
+	}
 
     public Arvore(){
         raiz = null;
@@ -12,7 +37,6 @@ public class Arvore{
     public void listarLivros(No no) {
         if (no != null) {
             listarLivros(no.getEsquerda());
-            System.out.println("\n");
             System.out.println(no.getLivro());
             System.out.println("\n");
             listarLivros(no.getDireita());
@@ -220,5 +244,46 @@ public class Arvore{
 
         return raiz;
     }
+
+	public void importarLivros(String filePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                Livro livro = parseLivro(line);
+                if (livro != null) {
+                    No novoNo = new No();
+                    novoNo.setLivro(livro);
+                    raiz = inserirNo(raiz, novoNo);
+					treePanel.setRaiz(raiz);
+                    System.out.println("Livro importado: " + livro); // Mensagem de depuração
+                }
+            }
+            treePanel.setRaiz(raiz); // Atualiza a renderização
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+	public void exportarLivros(String filePath) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+			exportarLivrosRecursivo(raiz, bw);
+			System.out.println("Livros exportados com sucesso para " + filePath);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void exportarLivrosRecursivo(No no, BufferedWriter bw) throws IOException {
+		if (no != null) {
+			exportarLivrosRecursivo(no.getEsquerda(), bw);
+			Livro livro = no.getLivro();
+			bw.write("ID: " + livro.getId() + ", Título: " + livro.getTitulo() + ", Autor: " + livro.getAutor() + 
+						", Gênero: " + livro.getGenero() + ", Páginas: " + livro.getQntdPag() + 
+						", Progresso: " + livro.getProgress() + "%");
+			bw.newLine();
+			exportarLivrosRecursivo(no.getDireita(), bw);
+		}
+	}
+	
 
 }
