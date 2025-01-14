@@ -4,10 +4,9 @@ import java.util.Scanner;
 
 public class Cadastro {
     Scanner scanner = new Scanner(System.in);
+    List<Livro> livCadastrado = new ArrayList<>();
     
     public Livro adicionarLivro(int id){
-        int id = i;
-
         System.out.print("Livro que deseja adicionar: ");
         String titulo = scanner.nextLine();
 
@@ -24,7 +23,7 @@ public class Cadastro {
 
         Livro livro = new Livro(id, titulo, autor, genero, qntdPag);
 
-        return Livro;
+        return livro;
     }
     
     public void mostrarLivro(){
