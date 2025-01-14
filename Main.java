@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Scanner;
 
 public class Main{
@@ -5,16 +6,18 @@ public class Main{
     public static void main(String[] args){
         Arvore biblioteca = new Arvore();
         int opcao;
-
+		String absolutePath = new File("livros.txt").getAbsolutePath();
+		biblioteca.importarLivros(absolutePath);
         System.out.println("Bem-vindo ao Oasis!");
         do{
-            Utils.clearConsole();
+			Utils.clearConsole();
             System.out.println("O que você deseja fazer?");
             System.out.println("1. Adicionar Livro");
             System.out.println("2. Listar Livros");
             System.out.println("3. Buscar por título");
             System.out.println("4. Remover Livros");
             System.out.println("5. Atualizar Livro");
+			System.out.println("6. Exportar Livros");
             System.out.println("0. Sair do programa");
             opcao = scanner.nextInt();
             scanner.nextLine();
@@ -30,6 +33,7 @@ public class Main{
                     No novoNo = new No();
                     novoNo.setLivro(novoLivro);
                     biblioteca.setRaiz(biblioteca.inserirNo(biblioteca.getRaiz(), novoNo));
+					biblioteca.exportarLivros(absolutePath);
                     break;
                 case 2:
                     if (biblioteca.arvoreVazia()) {
@@ -124,6 +128,12 @@ public class Main{
                         }
                     }
                     break;
+				case 6:
+					biblioteca.exportarLivros(absolutePath);
+					break;
+				default:
+					System.out.println("Opção inválida!");
+					break;
             }
         } while(opcao != 0);
 
