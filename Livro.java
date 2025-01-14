@@ -130,8 +130,8 @@ public class Livro{
         this.qntdPag = qntdPag;
     }
 
-    public int getProgress(){
-        return (int)pagLidas/qntdPag*100;
+    public float getProgress(){
+        return (float)pagLidas/qntdPag*100;
     }
 
     @Override

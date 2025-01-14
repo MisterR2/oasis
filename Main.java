@@ -90,6 +90,7 @@ public class Main{
                             Utils.clearConsole();
                             System.out.println("Livro removido com sucesso!");
                             System.out.println("Pressione qualquer tecla para continuar...");
+							biblioteca.exportarLivros(absolutePath);
                             scanner.nextLine();
                         } else {
                             Utils.clearConsole();
@@ -119,6 +120,7 @@ public class Main{
                             scanner.nextLine();
                             noAtualizado.getLivro().setPagLidas(pagLidas);
                             System.out.println("Livro atualizado com sucesso!");
+							biblioteca.exportarLivros(absolutePath);
                             System.out.println("Pressione qualquer tecla para continuar...");
                         } else {
                             Utils.clearConsole();

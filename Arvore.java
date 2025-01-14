@@ -17,7 +17,7 @@ public class Arvore{
 			String autor = parts[2].split(": ")[1];
 			String genero = parts[3].split(": ")[1];
 			int qntdPag = Integer.parseInt(parts[4].split(": ")[1]);
-			int progresso = Integer.parseInt(parts[5].split(": ")[1].replace("Progresso: ", "").replace("%", ""));
+			float progresso = Float.parseFloat(parts[5].split(": ")[1].replace("Progresso: ", "").replace("%", ""));
 			int pagLidas = (int) (qntdPag * progresso / 100);
 	
 			Livro livro = new Livro(titulo, autor, genero, qntdPag, pagLidas);
